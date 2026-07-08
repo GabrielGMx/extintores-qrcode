@@ -75,14 +75,20 @@
     const html5QrCode = new Html5Qrcode("reader");
 
     Html5Qrcode.getCameras().then(devices => {
-      if (devices && devices.length) {
-        // pega a primeira câmera disponível (geralmente traseira em celulares)
-        let cameraId = devices[0].id;
-        html5QrCode.start(cameraId, { fps: 10, qrbox: 350 }, onScanSuccess);
-      }
-    }).catch(err => {
-      console.error("Erro ao acessar câmera: ", err);
-    });
+  if (devices && devices.length) {
+    // tenta achar uma câmera traseira
+    let backCamera = devices.find(d => d.label.toLowerCase().includes("back"));
+    let cameraId = backCamera ? backCamera.id : devices[0].id;
+
+    html5QrCode.start(
+      cameraId,
+      { fps: 10, qrbox: 350 },
+      onScanSuccess
+    );
+  }
+}).catch(err => {
+  console.error("Erro ao acessar câmera: ", err);
+});
 
     function enviar() {
       const qr = document.getElementById("qrcodeValue").value;
