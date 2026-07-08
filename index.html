@@ -76,8 +76,12 @@
 
     Html5Qrcode.getCameras().then(devices => {
   if (devices && devices.length) {
-    // tenta achar uma câmera traseira
-    let backCamera = devices.find(d => d.label.toLowerCase().includes("back"));
+    // tenta achar uma câmera traseira pelo nome
+    let backCamera = devices.find(d => 
+      d.label.toLowerCase().includes("back") || 
+      d.label.toLowerCase().includes("rear")
+    );
+
     let cameraId = backCamera ? backCamera.id : devices[0].id;
 
     html5QrCode.start(
