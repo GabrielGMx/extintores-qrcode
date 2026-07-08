@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>Leitor de QRCode - Extintores</title>
+  <title>Leitor QRCode - Extintores</title>
   <script src="https://unpkg.com/html5-qrcode"></script>
   <style>
     body {
@@ -26,7 +26,7 @@
       font-size: 24px;
       font-weight: bold;
     }
-    input, select {
+    input, select, textarea {
       font-size: 22px;
       padding: 12px;
       margin: 12px;
@@ -51,7 +51,8 @@
   </style>
 </head>
 <body>
-  <h1>QRCode - Extintores</h1>
+  <h1>Leitor de QRCode - Extintores</h1>
+  <div id="cameraSelectContainer"></div>
   <div id="reader"></div>
   <p id="result"></p>
 
@@ -59,7 +60,7 @@
   <div id="form" style="display:none; margin-top:20px;">
     <h3 style="font-size:24px;">Observação</h3>
     <input type="text" id="qrcodeValue" readonly><br>
-    <textarea id="obs" placeholder="Insira a observação (se for o caso)"
+    <textarea id="obs" placeholder="Digite observação aqui..."></textarea><br>
     <select id="status">
       <option value="OK">OK</option>
       <option value="Despressurizado">Despressurizado</option>
@@ -78,24 +79,32 @@
     const html5QrCode = new Html5Qrcode("reader");
 
     Html5Qrcode.getCameras().then(devices => {
-  if (devices && devices.length) {
-    // tenta achar uma câmera traseira pelo nome
-    let backCamera = devices.find(d => 
-      d.label.toLowerCase().includes("back") || 
-      d.label.toLowerCase().includes("rear")
-    );
+      if (devices && devices.length) {
+        // cria seletor de câmera
+        const select = document.createElement("select");
+        select.style.fontSize = "22px";
+        devices.forEach(d => {
+          const option = document.createElement("option");
+          option.value = d.id;
+          option.text = d.label || d.id;
+          select.appendChild(option);
+        });
+        document.getElementById("cameraSelectContainer").appendChild(select);
 
-    let cameraId = backCamera ? backCamera.id : devices[0].id;
+        // inicia com a primeira
+        let cameraId = devices[0].id;
+        html5QrCode.start(cameraId, { fps: 10, qrbox: 350 }, onScanSuccess);
 
-    html5QrCode.start(
-      cameraId,
-      { fps: 10, qrbox: 350 },
-      onScanSuccess
-    );
-  }
-}).catch(err => {
-  console.error("Erro ao acessar câmera: ", err);
-});
+        // troca se o usuário selecionar outra
+        select.addEventListener("change", e => {
+          html5QrCode.stop().then(() => {
+            html5QrCode.start(e.target.value, { fps: 10, qrbox: 350 }, onScanSuccess);
+          });
+        });
+      }
+    }).catch(err => {
+      console.error("Erro ao acessar câmera: ", err);
+    });
 
     function enviar() {
       const qr = document.getElementById("qrcodeValue").value;
@@ -104,7 +113,7 @@
       const dataHora = new Date().toLocaleString();
 
       // Aqui depois vamos integrar com Google Sheets
-      alert("Enviado: " + qr + " - " + status + " - " + dataHora);
+      alert("Enviado:\nQR: " + qr + "\nStatus: " + status + "\nObs: " + obs + "\nData/Hora: " + dataHora);
     }
   </script>
 </body>
