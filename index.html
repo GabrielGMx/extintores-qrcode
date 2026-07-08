@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>Leitor QRCode - Extintores</title>
+  <title>Leitor de QRCode - Extintores</title>
   <script src="https://unpkg.com/html5-qrcode"></script>
   <style>
     body {
@@ -23,25 +23,27 @@
     }
     #result {
       margin-top: 20px;
-      font-size: 22px;
+      font-size: 24px;
       font-weight: bold;
     }
     input, select {
-      font-size: 18px;
-      padding: 8px;
-      margin: 10px;
-      border-radius: 6px;
+      font-size: 22px;
+      padding: 12px;
+      margin: 12px;
+      border-radius: 8px;
       border: none;
+      width: 80%;
     }
     button {
-      font-size: 18px;
-      padding: 12px 20px;
-      margin: 8px;
-      border-radius: 8px;
+      font-size: 22px;
+      padding: 14px 24px;
+      margin: 12px;
+      border-radius: 10px;
       background-color: #007bff;
       color: white;
       border: none;
       cursor: pointer;
+      width: 80%;
     }
     button:hover {
       background-color: #0056b3;
@@ -49,14 +51,15 @@
   </style>
 </head>
 <body>
-  <h1>Leitor de QRCode - Extintores</h1>
+  <h1>QRCode - Extintores</h1>
   <div id="reader"></div>
   <p id="result"></p>
 
   <!-- Formulário de observação -->
   <div id="form" style="display:none; margin-top:20px;">
-    <h3>Observação</h3>
+    <h3 style="font-size:24px;">Observação</h3>
     <input type="text" id="qrcodeValue" readonly><br>
+    <textarea id="obs" placeholder="Insira a observação (se for o caso)"
     <select id="status">
       <option value="OK">OK</option>
       <option value="Despressurizado">Despressurizado</option>
@@ -97,6 +100,7 @@
     function enviar() {
       const qr = document.getElementById("qrcodeValue").value;
       const status = document.getElementById("status").value;
+      const obs = document.getElementById("obs").value;
       const dataHora = new Date().toLocaleString();
 
       // Aqui depois vamos integrar com Google Sheets
