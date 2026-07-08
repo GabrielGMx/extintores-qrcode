@@ -26,24 +26,44 @@
       font-size: 24px;
       font-weight: bold;
     }
-    input, select, textarea {
+    #qrcodeValue {
+      font-size: 22px;
+      padding: 8px;
+      margin: 12px auto;
+      border-radius: 6px;
+      border: none;
+      display: block;
+      width: auto; /* só do tamanho do texto */
+    }
+    #obs {
       font-size: 22px;
       padding: 12px;
-      margin: 12px;
+      margin: 12px auto;
       border-radius: 8px;
       border: none;
-      width: 80%;
+      width: 80%;       /* largura confortável */
+      height: 100px;    /* mais alto para digitar */
+      display: block;
+    }
+    #status {
+      font-size: 20px;
+      padding: 8px;
+      margin: 12px auto;
+      border-radius: 6px;
+      border: none;
+      display: block;
+      width: auto;      /* menor e centralizado */
     }
     button {
       font-size: 22px;
-      padding: 14px 24px;
-      margin: 12px;
+      padding: 18px 28px; /* mais alto, largura proporcional ao texto */
+      margin: 12px auto;
       border-radius: 10px;
       background-color: #007bff;
       color: white;
       border: none;
       cursor: pointer;
-      width: 80%;
+      display: block;
     }
     button:hover {
       background-color: #0056b3;
@@ -55,6 +75,7 @@
       width: auto;
       padding: 10px 16px;
       border-radius: 50px;
+      margin-top: 10px;
     }
   </style>
 </head>
@@ -70,6 +91,7 @@
     <input type="text" id="qrcodeValue" readonly><br>
     <textarea id="obs" placeholder="Digite observação aqui..."></textarea><br>
     <select id="status">
+      <option value="" disabled selected>Selecionar Status</option>
       <option value="OK">OK</option>
       <option value="Despressurizado">Despressurizado</option>
       <option value="Vencido">Vencido</option>
