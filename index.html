@@ -1,24 +1,67 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="UTF-8">
-        <title> Leitor QR Extintores</title>
-        <script src="https://unpkg.com/html5-qrcode"></script>
-    </head>
-    <body>
-        <h2>Leitor de QRCode - Extintores IAE</h2>
-        <div id="reader" style="width:300px;"></div>
-        <p id="result"></p>
+<head>
+  <meta charset="UTF-8">
+  <title>Leitor QR Extintores</title>
+  <script src="https://unpkg.com/html5-qrcode"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin: 20px;
+    }
+    button {
+      font-size: 18px;
+      padding: 12px 20px;
+      margin: 8px;
+      border-radius: 8px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    #reader {
+      margin: auto;
+      width: 320px;
+      max-width: 100%;
+    }
+    #result {
+      margin-top: 20px;
+      font-size: 18px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <h2>Leitor de QRCode - Extintores</h2>
+  <div id="reader"></div>
+  <p id="result"></p>
 
-        <script>
-            function onScanSuccess(decodedText, decodedResult) {
-                document.getElementById("result").innerText = "QR Lido: " + decodedText;
-                
-            }
+  <script>
+    function onScanSuccess(decodedText, decodedResult) {
+      document.getElementById("result").innerText = "QR Lido: " + decodedText;
+      // Aqui você pode abrir um formulário para observação (OK, vencido, etc.)
+    }
 
-            let html5QrcodeScanner = new Html5QrcodeScanner(
-                "reader", { fps: 10, qrbox: 250 });
-            html5QrcodeScanner.render(onScanSuccess);
-        </script>
-    </body>
+    const html5QrCode = new Html5Qrcode("reader");
+
+    Html5Qrcode.getCameras().then(devices => {
+      if (devices && devices.length) {
+        // Normalmente a câmera traseira é a última da lista
+        let cameraId = devices[devices.length - 1].id;
+
+        html5QrCode.start(
+          cameraId,
+          { fps: 10, qrbox: 250 },
+          onScanSuccess
+        );
+      }
+    }).catch(err => {
+      console.error("Erro ao acessar câmera: ", err);
+    });
+  </script>
+</body>
 </html>
