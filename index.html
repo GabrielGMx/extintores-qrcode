@@ -13,7 +13,7 @@
       color: white;
     }
     h1 {
-      font-size: 32px;
+      font-size: 36px;
       margin-top: 20px;
     }
     #reader {
@@ -23,7 +23,7 @@
     }
     #result {
       margin-top: 20px;
-      font-size: 20px;
+      font-size: 22px;
       font-weight: bold;
     }
     input, select {
@@ -76,8 +76,8 @@
 
     Html5Qrcode.getCameras().then(devices => {
       if (devices && devices.length) {
-        // Normalmente a câmera traseira é a última da lista
-        let cameraId = devices[devices.length - 1].id;
+        // pega a primeira câmera disponível (geralmente traseira em celulares)
+        let cameraId = devices[0].id;
         html5QrCode.start(cameraId, { fps: 10, qrbox: 350 }, onScanSuccess);
       }
     }).catch(err => {
