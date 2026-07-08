@@ -25,12 +25,12 @@
     }
     #reader {
       margin: auto;
-      width: 320px;
-      max-width: 100%;
+      width: 100%;
+      max-width: 500px;
     }
     #result {
       margin-top: 20px;
-      font-size: 18px;
+      font-size: 20px;
       font-weight: bold;
     }
   </style>
@@ -55,7 +55,7 @@
 
         html5QrCode.start(
           cameraId,
-          { fps: 10, qrbox: 250 },
+          { fps: 10, qrbox: 350 },
           onScanSuccess
         );
       }
