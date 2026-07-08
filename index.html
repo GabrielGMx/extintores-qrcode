@@ -2,19 +2,36 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>Leitor QR Extintores</title>
+  <title>Leitor QRCode - Extintores</title>
   <script src="https://unpkg.com/html5-qrcode"></script>
   <style>
     body {
       font-family: Arial, sans-serif;
       text-align: center;
-      margin: 20px;
-      background-color: #b22222;
+      margin: 0;
+      background-color: #b22222; /* vermelho bombeiro mais calmo */
       color: white;
     }
     h1 {
-      font-size: 28px;
+      font-size: 32px;
       margin-top: 20px;
+    }
+    #reader {
+      margin: auto;
+      width: 100%;
+      max-width: 500px;
+    }
+    #result {
+      margin-top: 20px;
+      font-size: 20px;
+      font-weight: bold;
+    }
+    input, select {
+      font-size: 18px;
+      padding: 8px;
+      margin: 10px;
+      border-radius: 6px;
+      border: none;
     }
     button {
       font-size: 18px;
@@ -29,27 +46,30 @@
     button:hover {
       background-color: #0056b3;
     }
-    #reader {
-      margin: auto;
-      width: 100%;
-      max-width: 500px;
-    }
-    #result {
-      margin-top: 20px;
-      font-size: 20px;
-      font-weight: bold;
-    }
   </style>
 </head>
 <body>
-  <h1>QRCode - Extintores</h1>
+  <h1>Leitor de QRCode - Extintores</h1>
   <div id="reader"></div>
   <p id="result"></p>
+
+  <!-- Formulário de observação -->
+  <div id="form" style="display:none; margin-top:20px;">
+    <h3>Observação</h3>
+    <input type="text" id="qrcodeValue" readonly><br>
+    <select id="status">
+      <option value="OK">OK</option>
+      <option value="Despressurizado">Despressurizado</option>
+      <option value="Vencido">Vencido</option>
+    </select><br>
+    <button onclick="enviar()">Enviar</button>
+  </div>
 
   <script>
     function onScanSuccess(decodedText, decodedResult) {
       document.getElementById("result").innerText = "QR Lido: " + decodedText;
-      // Aqui você pode abrir um formulário para observação (OK, vencido, etc.)
+      document.getElementById("form").style.display = "block";
+      document.getElementById("qrcodeValue").value = decodedText;
     }
 
     const html5QrCode = new Html5Qrcode("reader");
@@ -58,16 +78,20 @@
       if (devices && devices.length) {
         // Normalmente a câmera traseira é a última da lista
         let cameraId = devices[devices.length - 1].id;
-
-        html5QrCode.start(
-          cameraId,
-          { fps: 10, qrbox: 350 },
-          onScanSuccess
-        );
+        html5QrCode.start(cameraId, { fps: 10, qrbox: 350 }, onScanSuccess);
       }
     }).catch(err => {
       console.error("Erro ao acessar câmera: ", err);
     });
+
+    function enviar() {
+      const qr = document.getElementById("qrcodeValue").value;
+      const status = document.getElementById("status").value;
+      const dataHora = new Date().toLocaleString();
+
+      // Aqui depois vamos integrar com Google Sheets
+      alert("Enviado: " + qr + " - " + status + " - " + dataHora);
+    }
   </script>
 </body>
 </html>
