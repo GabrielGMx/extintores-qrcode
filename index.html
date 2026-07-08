@@ -48,11 +48,19 @@
     button:hover {
       background-color: #0056b3;
     }
+    #toggleCamera {
+      background-color: #ffcc00;
+      color: black;
+      font-size: 20px;
+      width: auto;
+      padding: 10px 16px;
+      border-radius: 50px;
+    }
   </style>
 </head>
 <body>
   <h1>Leitor de QRCode - Extintores</h1>
-  <div id="cameraSelectContainer"></div>
+  <button id="toggleCamera">📷 Trocar câmera</button>
   <div id="reader"></div>
   <p id="result"></p>
 
@@ -70,38 +78,38 @@
   </div>
 
   <script>
-    function onScanSuccess(decodedText, decodedResult) {
+    function onScanSuccess(decodedText) {
       document.getElementById("result").innerText = "QR Lido: " + decodedText;
       document.getElementById("form").style.display = "block";
       document.getElementById("qrcodeValue").value = decodedText;
     }
 
     const html5QrCode = new Html5Qrcode("reader");
+    let cameras = { front: [], back: [] };
+    let currentType = "back";
 
     Html5Qrcode.getCameras().then(devices => {
-      if (devices && devices.length) {
-        // cria seletor de câmera
-        const select = document.createElement("select");
-        select.style.fontSize = "22px";
-        devices.forEach(d => {
-          const option = document.createElement("option");
-          option.value = d.id;
-          option.text = d.label || d.id;
-          select.appendChild(option);
-        });
-        document.getElementById("cameraSelectContainer").appendChild(select);
+      devices.forEach(d => {
+        const label = d.label.toLowerCase();
+        if (label.includes("front")) {
+          cameras.front.push(d.id);
+        } else {
+          cameras.back.push(d.id);
+        }
+      });
 
-        // inicia com a primeira
-        let cameraId = devices[0].id;
-        html5QrCode.start(cameraId, { fps: 10, qrbox: 350 }, onScanSuccess);
+      // inicia na traseira se existir
+      let startId = cameras.back.length ? cameras.back[0] : devices[0].id;
+      html5QrCode.start(startId, { fps: 10, qrbox: 350 }, onScanSuccess);
 
-        // troca se o usuário selecionar outra
-        select.addEventListener("change", e => {
-          html5QrCode.stop().then(() => {
-            html5QrCode.start(e.target.value, { fps: 10, qrbox: 350 }, onScanSuccess);
-          });
+      // botão alterna entre frontal/traseira
+      document.getElementById("toggleCamera").addEventListener("click", () => {
+        html5QrCode.stop().then(() => {
+          currentType = currentType === "back" ? "front" : "back";
+          let nextId = cameras[currentType][0] || devices[0].id;
+          html5QrCode.start(nextId, { fps: 10, qrbox: 350 }, onScanSuccess);
         });
-      }
+      });
     }).catch(err => {
       console.error("Erro ao acessar câmera: ", err);
     });
