@@ -188,14 +188,40 @@
     });
 
     function enviar() {
-      const qr = document.getElementById("qrcodeValue").value;
-      const status = document.getElementById("status").value;
-      const obs = document.getElementById("obs").value;
-      const dataHora = new Date().toLocaleString();
+  const qr = document.getElementById("qrcodeValue").value;
+  const tipo = document.getElementById("tipo").value;
+  const status = document.getElementById("status").value;
+  const obs = document.getElementById("obs").value;
+  const brigadista = document.getElementById("brigadista").value;
+  const dataHora = new Date().toLocaleString();
 
-      // Aqui depois vamos integrar com Google Sheets
-      alert("Enviado:\nQR: " + qr + "\nStatus: " + status + "\nObs: " + obs + "\nData/Hora: " + dataHora);
-    }
+  // Validação obrigatória
+  if (!tipo || !status || !brigadista) {
+    alert("Preencha todos os campos obrigatórios: Tipo, Status e Brigadista.");
+    return;
+  }
+
+  // Enviar dados para a planilha de Controle de Extintores
+  fetch("https://script.google.com/macros/s/AKfycbyphQjY08xuT-_eLSAT1zTVd7NdwwGe3jTPoJADSfO6avOZ2Obpkw0yi4v0WiTCIjo0cg/exec", {
+    method: "POST",
+    body: JSON.stringify({
+      qr: qr,
+      tipo: tipo,
+      status: status,
+      brigadista: brigadista,
+      obs: obs,
+      dataHora: dataHora
+    })
+  })
+  .then(r => r.text())
+  .then(resp => {
+    alert("Vistoria realizada com sucesso!");
+    document.getElementById("form").style.display = "none"; // esconde o formulário
+  })
+  .catch(err => {
+    alert("Erro ao enviar: " + err);
+  });
+}
   </script>
 </body>
 
