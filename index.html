@@ -48,20 +48,20 @@
       margin: 16px auto;
       border-radius: 8px;
       border: none;
-      width: 80%;     /* largura confortável */
-      height: 140px;  /* mais alto para digitar */
+      width: 70%;     /* largura confortável */
+      height: 120px;  /* mais alto para digitar */
       display: block;
     }
 
     label {
-      font-size: 18px;
+      font-size: 28px;
       margin-right: 8px;
       color: white;
     }
 
     #tipo, #status {
-      font-size: 28px;
-      padding: 14px;
+      font-size: 26px;
+      padding: 12px;
       margin: 16px auto;
       border-radius: 8px;
       text-align: center;
@@ -77,7 +77,7 @@
       border-radius: 8px;
       border: none;
       display: block;
-      width: 80%;
+      width: 50%;
     }
 
     button {
@@ -115,11 +115,8 @@
   <p id="result"></p>
 
   <!-- Formulário de Observação -->
-  <div id="form" style="display:none; margin-top:20px;">
+  <div id="form" style=" margin-top:20px;">
     <input type="text" id="qrcodeValue" readonly><br>
-
-    <h3 style="font-size:36px;">Observação</h3>
-    <textarea id="obs" placeholder="Insira a observação (se não houver, deixe em branco)..."></textarea><br>
 
     <!-- Lista suspensa para Tipo -->
     <label for="tipo">Tipo de Extintor: </label>
@@ -142,6 +139,9 @@
       <option value="Vencido">Vencido</option>
       <option value="Faltando">Faltando</option>
     </select><br>
+
+    <label for="obs">Observação</label>
+    <textarea id="obs" placeholder="Insira a observação (se não houver, deixe em branco)..."></textarea><br>
 
     <!-- Caixa de texto para Brigadista -->
       <label for="brigadista">Brigadista Vistoriante:</label>
