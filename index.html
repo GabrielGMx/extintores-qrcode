@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <meta charset="UTF-8">
   <title>Leitor QRCode - Extintores</title>
@@ -12,20 +13,24 @@
       background-color: #b22222; /* vermelho bombeiro mais calmo */
       color: white;
     }
+
     h1 {
       font-size: 36px;
       margin-top: 20px;
     }
+
     #reader {
       margin: auto;
       width: 100%;
       max-width: 500px;
     }
+
     #result {
       margin-top: 20px;
       font-size: 24px;
       font-weight: bold;
     }
+
     #qrcodeValue {
       font-size: 24px;
       padding: 8px;
@@ -34,19 +39,27 @@
       text-align: center;
       border: none;
       display: block;
-      width: auto; /* só do tamanho do texto */
+      width: auto;    /* só do tamanho do texto */
     }
+
     #obs {
       font-size: 26px;
       padding: 16px;
       margin: 16px auto;
       border-radius: 8px;
       border: none;
-      width: 80%;       /* largura confortável */
-      height: 140px;    /* mais alto para digitar */
+      width: 80%;     /* largura confortável */
+      height: 140px;  /* mais alto para digitar */
       display: block;
     }
-    #status {
+
+    label {
+      font-size: 18px;
+      margin-right: 8px;
+      color: white;
+    }
+
+    #tipo, #status {
       font-size: 28px;
       padding: 14px;
       margin: 16px auto;
@@ -56,9 +69,20 @@
       display: block;
       width: auto;
     }
+
+    #brigadista {
+      font-size: 24px;
+      padding: 12px;
+      margin: 16px auto;
+      border-radius: 8px;
+      border: none;
+      display: block;
+      width: 80%;
+    }
+
     button {
       font-size: 32px;
-      padding: 22px 32px; /* mais alto, largura proporcional ao texto */
+      padding: 22px 32px;   /* mais alto, largura proporcional ao texto */
       margin: 32px auto 16px auto;
       border-radius: 12px;
       background-color: #007bff;
@@ -67,9 +91,11 @@
       cursor: pointer;
       display: block;
     }
+
     button:hover {
       background-color: #0056b3;
     }
+
     #toggleCamera {
       background-color: #9c9c9c;
       color: black;
@@ -81,23 +107,46 @@
     }
   </style>
 </head>
+
 <body>
   <h1>QRCode - Extintores</h1>
   <button id="toggleCamera">📷 Trocar câmera</button>
   <div id="reader"></div>
   <p id="result"></p>
 
-  <!-- Formulário de observação -->
+  <!-- Formulário de Observação -->
   <div id="form" style="display:none; margin-top:20px;">
     <input type="text" id="qrcodeValue" readonly><br>
+
     <h3 style="font-size:36px;">Observação</h3>
     <textarea id="obs" placeholder="Insira a observação (se não houver, deixe em branco)..."></textarea><br>
+
+    <!-- Lista suspensa para Tipo -->
+    <label for="tipo">Tipo de Extintor: </label>
+    <select id="tipo">
+      <option value="" disabled selected>Selecionar...</option>
+      <option value="CO2 6Kg">CO2 6Kg</option>
+      <option value="CO2 10Kg">CO2 10Kg</option>
+      <option value="CO2 20Kg">CO2 20Kg</option>
+      <option value="Espuma 10L">Espuma 10L</option>
+      <option value="Espuma 50L">Espuma 50L</option>
+      <option value="Pó ABC 6Kg">Pó ABC 6Kg</option>
+    </select><br>
+
+    <!-- Lista suspensa para Status -->
+    <label for="status">Status: </label>
     <select id="status">
-      <option value="" disabled selected>Informar Status...</option>
+      <option value="" disabled selected>Selecionar...</option>
       <option value="OK">OK</option>
       <option value="Despressurizado">Despressurizado</option>
       <option value="Vencido">Vencido</option>
+      <option value="Faltando">Faltando</option>
     </select><br>
+
+    <!-- Caixa de texto para Brigadista -->
+      <label for="brigadista">Brigadista Vistoriante:</label>
+      <input type="text" id="brigadista" name="brigadista" placeholder="Posto/Grad Nome de Guerra">
+
     <button onclick="enviar()">Enviar</button>
   </div>
 
@@ -149,4 +198,5 @@
     }
   </script>
 </body>
+
 </html>
