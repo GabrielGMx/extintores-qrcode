@@ -10,7 +10,8 @@
       font-family: Arial, sans-serif;
       text-align: center;
       margin: 0;
-      background-color: #b22222; /* vermelho bombeiro mais calmo */
+      background-color: #b22222;
+      /* vermelho bombeiro mais calmo */
       color: white;
     }
 
@@ -39,7 +40,8 @@
       text-align: center;
       border: none;
       display: block;
-      width: auto;    /* só do tamanho do texto */
+      width: auto;
+      /* só do tamanho do texto */
     }
 
     #obs {
@@ -48,8 +50,10 @@
       margin: 16px auto;
       border-radius: 8px;
       border: none;
-      width: 70%;     /* largura confortável */
-      height: 120px;  /* mais alto para digitar */
+      width: 70%;
+      /* largura confortável */
+      height: 120px;
+      /* mais alto para digitar */
       display: block;
     }
 
@@ -59,7 +63,8 @@
       color: white;
     }
 
-    #tipo, #status {
+    #tipo,
+    #status {
       font-size: 26px;
       padding: 12px;
       margin: 16px auto;
@@ -82,7 +87,8 @@
 
     button {
       font-size: 32px;
-      padding: 22px 32px;   /* mais alto, largura proporcional ao texto */
+      padding: 22px 32px;
+      /* mais alto, largura proporcional ao texto */
       margin: 40px auto 16px auto;
       border-radius: 12px;
       background-color: #007bff;
@@ -144,8 +150,8 @@
     <textarea id="obs" placeholder="Insira a observação (se não houver, deixe em branco)..."></textarea><br>
 
     <!-- Caixa de texto para Brigadista -->
-      <label for="brigadista">Brigadista Vistoriador:</label>
-      <input type="text" id="brigadista" name="brigadista" placeholder="Posto/Grad Nome de Guerra">
+    <label for="brigadista">Brigadista Vistoriador:</label>
+    <input type="text" id="brigadista" name="brigadista" placeholder="Posto/Grad Nome de Guerra">
 
     <button onclick="enviar()">Enviar</button>
   </div>
@@ -154,7 +160,20 @@
     function onScanSuccess(decodedText) {
       document.getElementById("result").innerText = "QR Lido: " + decodedText;
       document.getElementById("form").style.display = "block";
-      document.getElementById("qrcodeValue").value = decodedText;
+      // consultar o LOCAL na planilha
+      fetch("https://script.google.com/macros/s/AKfycbzfH68_ALvGUp3apjNxoZMlCb0ifBlvhzrX4K81nPz0iD94EO6ilWA5ivnKSCh4F1dzzA/exec?qr=" + encodeURIComponent(decodedText))
+        .then(r => r.json())
+        .then(resp => {
+          if (resp.local) {
+            document.getElementById("qrcodeValue").value = "Edificação: " + resp.local; // Mostrar o LOCAL onde encontra-se o extintor, de acordo com a planilha de controle
+          } else {
+            document.getElementById("qrcodeValue").value = decodedText; // Se não achar a célula LOCAL, escrever o texto do QRCode
+          }
+        })
+        .catch(err => {
+          console.error("Erro ao buscar LOCAL:", err);
+          document.getElementById("qrcodeValue").value = decodedText;
+        });
     }
 
     const html5QrCode = new Html5Qrcode("reader");
@@ -171,11 +190,11 @@
         }
       });
 
-      // inicia na traseira se existir
+      // iniciar na câmera traseira
       let startId = cameras.back.length ? cameras.back[0] : devices[0].id;
       html5QrCode.start(startId, { fps: 10, qrbox: 350 }, onScanSuccess);
 
-      // botão alterna entre frontal/traseira
+      // botão de alternar entre frontal/traseira
       document.getElementById("toggleCamera").addEventListener("click", () => {
         html5QrCode.stop().then(() => {
           currentType = currentType === "back" ? "front" : "back";
@@ -188,40 +207,40 @@
     });
 
     function enviar() {
-  const qr = document.getElementById("qrcodeValue").value;
-  const tipo = document.getElementById("tipo").value;
-  const status = document.getElementById("status").value;
-  const obs = document.getElementById("obs").value;
-  const brigadista = document.getElementById("brigadista").value;
-  const dataHora = new Date().toLocaleString();
+      const qr = document.getElementById("qrcodeValue").value;
+      const tipo = document.getElementById("tipo").value;
+      const status = document.getElementById("status").value;
+      const obs = document.getElementById("obs").value;
+      const brigadista = document.getElementById("brigadista").value;
+      const dataHora = new Date().toLocaleString();
 
-  // Validação obrigatória
-  if (!tipo || !status || !brigadista) {
-    alert("Preencha todos os campos obrigatórios: Tipo, Status e Brigadista.");
-    return;
-  }
+      // Preenchimento obrigatório
+      if (!tipo || !status || !brigadista) {
+        alert("Preencha todos os campos obrigatórios: Tipo, Status e Brigadista.");
+        return;
+      }
 
-  // Enviar dados para a planilha de Controle de Extintores
-  fetch("https://script.google.com/macros/s/AKfycbyphQjY08xuT-_eLSAT1zTVd7NdwwGe3jTPoJADSfO6avOZ2Obpkw0yi4v0WiTCIjo0cg/exec", {
-    method: "POST",
-    body: JSON.stringify({
-      qr: qr,
-      tipo: tipo,
-      status: status,
-      brigadista: brigadista,
-      obs: obs,
-      dataHora: dataHora
-    })
-  })
-  .then(r => r.text())
-  .then(resp => {
-    alert("Vistoria realizada com sucesso!");
-    document.getElementById("form").style.display = "none"; // esconde o formulário
-  })
-  .catch(err => {
-    alert("Erro ao enviar: " + err);
-  });
-}
+      // Enviar dados para a planilha de Controle de Extintores
+      fetch("https://script.google.com/macros/s/AKfycbzfH68_ALvGUp3apjNxoZMlCb0ifBlvhzrX4K81nPz0iD94EO6ilWA5ivnKSCh4F1dzzA/exec", {
+        method: "POST",
+        body: JSON.stringify({
+          qr: qr,
+          tipo: tipo,
+          status: status,
+          brigadista: brigadista,
+          obs: obs,
+          dataHora: dataHora
+        })
+      })
+        .then(r => r.text())
+        .then(resp => {
+          alert("Vistoria realizada com sucesso!");
+          document.getElementById("form").style.display = "none"; // esconde o formulário
+        })
+        .catch(err => {
+          alert("Erro ao enviar: " + err);
+        });
+    }
   </script>
 </body>
 
