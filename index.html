@@ -223,6 +223,7 @@
       // Enviar dados para a planilha de Controle de Extintores
       fetch("https://script.google.com/macros/s/AKfycbzxVK9-FTtbZFdb1GzJAARI1sivxAu41xKcLjUdnurR0p0rXfxyZviqOGt3k4DR7uauXg/exec", {
         method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           qr: qr,
           tipo: tipo,
