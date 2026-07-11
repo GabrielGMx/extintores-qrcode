@@ -161,7 +161,7 @@
       document.getElementById("result").innerText = "QR Lido: " + decodedText;
       document.getElementById("form").style.display = "block";
       // consultar o LOCAL na planilha
-      fetch("https://script.google.com/macros/s/AKfycbzfH68_ALvGUp3apjNxoZMlCb0ifBlvhzrX4K81nPz0iD94EO6ilWA5ivnKSCh4F1dzzA/exec?qr=" + encodeURIComponent(decodedText))
+      fetch("https://script.google.com/macros/s/AKfycbzxVK9-FTtbZFdb1GzJAARI1sivxAu41xKcLjUdnurR0p0rXfxyZviqOGt3k4DR7uauXg/exec?qr=" + encodeURIComponent(decodedText))
         .then(r => r.json())
         .then(resp => {
           if (resp.local) {
@@ -221,7 +221,7 @@
       }
 
       // Enviar dados para a planilha de Controle de Extintores
-      fetch("https://script.google.com/macros/s/AKfycbzfH68_ALvGUp3apjNxoZMlCb0ifBlvhzrX4K81nPz0iD94EO6ilWA5ivnKSCh4F1dzzA/exec", {
+      fetch("https://script.google.com/macros/s/AKfycbzxVK9-FTtbZFdb1GzJAARI1sivxAu41xKcLjUdnurR0p0rXfxyZviqOGt3k4DR7uauXg/exec", {
         method: "POST",
         body: JSON.stringify({
           qr: qr,
@@ -232,14 +232,14 @@
           dataHora: dataHora
         })
       })
-        .then(r => r.text())
+        .then(r => r.json())
         .then(resp => {
+          if (resp.status == "Sucesso!") {
           alert("Vistoria realizada com sucesso!");
-          document.getElementById("form").style.display = "none"; // esconde o formulário
+          document.getElementById("form").style.display = "none"; // esconder formulário
+        } else { alert("Erro: resposta inesperada no servidor!"); }
         })
-        .catch(err => {
-          alert("Erro ao enviar: " + err);
-        });
+        .catch(err => { alert("Erro ao enviar: " + err); });
     }
   </script>
 </body>
