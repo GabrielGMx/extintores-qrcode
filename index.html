@@ -169,7 +169,7 @@
         .then(r => r.json())
         .then(resp => {
           if (resp.local) {
-            document.getElementById("qrcodeValue").value = "Edificação: " + resp.local; // Mostrar o LOCAL onde encontra-se o extintor, de acordo com a planilha de controle
+            document.getElementById("localInfo").innerText = "Edificação: " + resp.local; // Mostrar o LOCAL onde encontra-se o extintor, de acordo com a planilha de controle
           } else {
             document.getElementById("qrcodeValue").value = decodedText; // Se não achar a célula LOCAL, escrever o texto do QRCode
           }
