@@ -207,41 +207,29 @@
     });
 
     function enviar() {
-      const qr = document.getElementById("qrcodeValue").value;
-      const tipo = document.getElementById("tipo").value;
-      const status = document.getElementById("status").value;
-      const obs = document.getElementById("obs").value;
-      const brigadista = document.getElementById("brigadista").value;
-      const dataHora = new Date().toLocaleString();
+  const qr = encodeURIComponent(document.getElementById("qrcodeValue").value);
+  const tipo = encodeURIComponent(document.getElementById("tipo").value);
+  const status = encodeURIComponent(document.getElementById("status").value);
+  const obs = encodeURIComponent(document.getElementById("obs").value);
+  const brigadista = encodeURIComponent(document.getElementById("brigadista").value);
+  const dataHora = encodeURIComponent(new Date().toLocaleString());
 
-      // Preenchimento obrigatório
-      if (!tipo || !status || !brigadista) {
-        alert("Preencha todos os campos obrigatórios: Tipo, Status e Brigadista.");
-        return;
+  const url = `https://script.google.com/macros/s/SEU_ID/exec?qr=${qr}&tipo=${tipo}&status=${status}&brigadista=${brigadista}&obs=${obs}&dataHora=${dataHora}`;
+
+  fetch(url)
+    .then(r => r.json())
+    .then(resp => {
+      if (resp.status === "Sucesso!") {
+        alert("✅ Vistoria realizada com sucesso!");
+        document.getElementById("form").style.display = "none";
+      } else {
+        alert("⚠️ Erro: resposta inesperada no servidor.");
       }
-
-      // Enviar dados para a planilha de Controle de Extintores
-      fetch("https://script.google.com/macros/s/AKfycbzxVK9-FTtbZFdb1GzJAARI1sivxAu41xKcLjUdnurR0p0rXfxyZviqOGt3k4DR7uauXg/exec", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          qr: qr,
-          tipo: tipo,
-          status: status,
-          brigadista: brigadista,
-          obs: obs,
-          dataHora: dataHora
-        })
-      })
-        .then(r => r.json())
-        .then(resp => {
-          if (resp.status == "Sucesso!") {
-          alert("Vistoria realizada com sucesso!");
-          document.getElementById("form").style.display = "none"; // esconder formulário
-        } else { alert("Erro: resposta inesperada no servidor!"); }
-        })
-        .catch(err => { alert("Erro ao enviar: " + err); });
-    }
+    })
+    .catch(err => {
+      alert("❌ Erro ao enviar: " + err);
+    });
+}
   </script>
 </body>
 
