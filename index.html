@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html>
-
 <head>
   <meta charset="UTF-8">
   <title>Leitor QRCode - Extintores</title>
@@ -11,84 +10,57 @@
       text-align: center;
       margin: 0;
       background-color: #b22222;
-      /* vermelho bombeiro mais calmo */
       color: white;
     }
-
     h1 {
       font-size: 36px;
-      margin-top: 20px;
+      margin-top: 20px; 
     }
-
     #reader {
       margin: auto;
       width: 100%;
       max-width: 500px;
     }
-
     #result {
       margin-top: 20px;
       font-size: 24px;
       font-weight: bold;
     }
-
+    #qrcodeValue, #tipo, #status, #brigadista, #obs {
+      display: block;
+      margin: 12px auto;
+      border-radius: 6px;
+      border: none;
+    }
     #qrcodeValue {
       font-size: 24px;
       padding: 8px;
-      margin: 12px auto;
-      border-radius: 6px;
       text-align: center;
-      border: none;
-      display: block;
-      width: auto;
-      /* só do tamanho do texto */
     }
-
+    #tipo, #status {
+      font-size: 26px;
+      padding: 12px;
+      text-align: center;
+    }
+    #brigadista {
+      font-size: 30px;
+      padding: 12px;
+      width: 50%;
+    }
     #obs {
       font-size: 26px;
       padding: 16px;
-      margin: 16px auto;
-      border-radius: 8px;
-      border: none;
       width: 70%;
-      /* largura confortável */
       height: 120px;
-      /* mais alto para digitar */
-      display: block;
     }
-
     label {
       font-size: 30px;
       margin-right: 8px;
       color: white;
     }
-
-    #tipo,
-    #status {
-      font-size: 26px;
-      padding: 12px;
-      margin: 16px auto;
-      border-radius: 8px;
-      text-align: center;
-      border: none;
-      display: block;
-      width: auto;
-    }
-
-    #brigadista {
-      font-size: 30px;
-      padding: 12px;
-      margin: 16px auto;
-      border-radius: 8px;
-      border: none;
-      display: block;
-      width: 50%;
-    }
-
     button {
       font-size: 32px;
       padding: 22px 32px;
-      /* mais alto, largura proporcional ao texto */
       margin: 40px auto 16px auto;
       border-radius: 12px;
       background-color: #007bff;
@@ -97,16 +69,11 @@
       cursor: pointer;
       display: block;
     }
-
-    button:hover {
-      background-color: #0056b3;
-    }
-
+    button:hover { background-color: #0056b3; }
     #toggleCamera {
       background-color: #9c9c9c;
       color: black;
       font-size: 20px;
-      width: auto;
       padding: 10px 16px;
       border-radius: 50px;
       margin-top: 10px;
@@ -114,18 +81,16 @@
   </style>
 </head>
 
-<body>
+  <body>
   <h1>QRCode - Extintores</h1>
   <button id="toggleCamera">📷 Trocar câmera</button>
   <div id="reader"></div>
   <p id="result"></p>
 
-  <!-- Formulário de Observação -->
-  <div id="form" style=" margin-top:20px;">
+  <div id="form" style="margin-top:20px; display:none;">
     <input type="text" id="qrcodeValue" readonly><br>
     <p id="localInfo"></p>
 
-    <!-- Lista suspensa para Tipo -->
     <label for="tipo">Tipo de Extintor:</label>
     <select id="tipo">
       <option value="" disabled selected>Selecionar...</option>
@@ -137,7 +102,6 @@
       <option value="Pó ABC 6Kg">Pó ABC 6Kg</option>
     </select><br>
 
-    <!-- Lista suspensa para Status -->
     <label for="status">Status:</label>
     <select id="status">
       <option value="" disabled selected>Selecionar...</option>
@@ -148,58 +112,47 @@
     </select><br>
 
     <label for="obs">Observação:</label>
-    <textarea id="obs" placeholder="Insira a observação (se não houver, deixe em branco)..."></textarea><br>
+    <textarea id="obs" placeholder="Insira a observação..."></textarea><br>
 
-    <!-- Caixa de texto para Brigadista -->
     <label for="brigadista">Brigadista Vistoriador:</label>
-    <input type="text" id="brigadista" name="brigadista" placeholder="Posto/Grad Nome de Guerra">
+    <input type="text" id="brigadista" placeholder="Posto/Grad Nome de Guerra">
 
     <button onclick="enviar()">Enviar</button>
   </div>
 
   <script>
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzxVK9-FTtbZFdb1GzJAARI1sivxAu41xKcLjUdnurR0p0rXfxyZviqOGt3k4DR7uauXg/exec";
+
     function onScanSuccess(decodedText) {
       document.getElementById("result").innerText = "QR Lido: " + decodedText;
       document.getElementById("form").style.display = "block";
-      
       document.getElementById("qrcodeValue").value = decodedText;
-      console.log("QR lido:", decodedText);
-      
-      // consultar o LOCAL na planilha
-      fetch("https://script.google.com/macros/s/AKfycbzxVK9-FTtbZFdb1GzJAARI1sivxAu41xKcLjUdnurR0p0rXfxyZviqOGt3k4DR7uauXg/exec?qr=" + encodeURIComponent(decodedText))
+
+      // Consulta do local (GET simples)
+      fetch(`${SCRIPT_URL}?qr=${encodeURIComponent(decodedText)}`)
         .then(r => r.json())
         .then(resp => {
           if (resp.local) {
-            document.getElementById("localInfo").innerText = "Edificação: " + resp.local; // Mostrar o LOCAL onde encontra-se o extintor, de acordo com a planilha de controle
+            document.getElementById("localInfo").innerText = "Edificação: " + resp.local;
           } else {
-            document.getElementById("qrcodeValue").value = decodedText; // Se não achar a célula LOCAL, escrever o texto do QRCode
+            document.getElementById("localInfo").innerText = "Local não encontrado";
           }
         })
-        .catch(err => {
-          console.error("Erro ao buscar LOCAL:", err);
-          document.getElementById("qrcodeValue").value = decodedText;
-        });
+        .catch(err => console.error("Erro ao buscar LOCAL:", err));
     }
 
     const html5QrCode = new Html5Qrcode("reader");
-    let cameras = { front: [], back: [] };
-    let currentType = "back";
+    let cameras = { front: [], back: [] }, currentType = "back";
 
     Html5Qrcode.getCameras().then(devices => {
       devices.forEach(d => {
         const label = d.label.toLowerCase();
-        if (label.includes("front")) {
-          cameras.front.push(d.id);
-        } else {
-          cameras.back.push(d.id);
-        }
+        if (label.includes("front")) cameras.front.push(d.id);
+        else cameras.back.push(d.id);
       });
-
-      // iniciar na câmera traseira
       let startId = cameras.back.length ? cameras.back[0] : devices[0].id;
       html5QrCode.start(startId, { fps: 10, qrbox: 350 }, onScanSuccess);
 
-      // botão de alternar entre frontal/traseira
       document.getElementById("toggleCamera").addEventListener("click", () => {
         html5QrCode.stop().then(() => {
           currentType = currentType === "back" ? "front" : "back";
@@ -207,51 +160,40 @@
           html5QrCode.start(nextId, { fps: 10, qrbox: 350 }, onScanSuccess);
         });
       });
-    }).catch(err => {
-      console.error("Erro ao acessar câmera: ", err);
-    });
+    }).catch(err => console.error("Erro ao acessar câmera:", err));
 
     function enviar() {
-  const qr = encodeURIComponent(document.getElementById("qrcodeValue").value);
-  const tipo = encodeURIComponent(document.getElementById("tipo").value);
-  const status = encodeURIComponent(document.getElementById("status").value);
-  const obs = encodeURIComponent(document.getElementById("obs").value);
-  const brigadista = encodeURIComponent(document.getElementById("brigadista").value);
-  const dataHora = encodeURIComponent(new Date().toLocaleString());
+      const qr = document.getElementById("qrcodeValue").value;
+      const tipo = document.getElementById("tipo").value;
+      const status = document.getElementById("status").value;
+      const obs = document.getElementById("obs").value;
+      const brigadista = document.getElementById("brigadista").value;
+      const dataHora = new Date().toLocaleString();
 
-  const url = `https://script.google.com/macros/s/AKfycbzxVK9-FTtbZFdb1GzJAARI1sivxAu41xKcLjUdnurR0p0rXfxyZviqOGt3k4DR7uauXg/exec?qr=${qr}&tipo=${tipo}&status=${status}&brigadista=${brigadista}&obs=${obs}&dataHora=${dataHora}`;
+      if (!tipo || !status || !brigadista) {
+        alert("⚠️ Preencha Tipo, Status e Brigadista antes de enviar!");
+        return;
+      }
 
-  console.log("URL chamada:", url);    
-  fetch(url)
-  .then(r => r.text())  
-  .then(text => {
-    console.log("Resposta bruta:", text);
-    let resp;
-    try {
-      resp = JSON.parse(text);
-    } catch(e) {
-      alert("⚠️ Erro: resposta não é JSON válido.");
-      return;
-    }
+      const formData = new URLSearchParams({ qr, tipo, status, brigadista, obs, dataHora });
 
-    if (resp && resp.resultado && resp.resultado.toLowerCase() === "sucesso") {
-      alert("✅ Vistoria realizada com sucesso!");
-      document.getElementById("form").style.display = "none";
-    } else if (resp && resp.resultado === "QR não encontrado") {
-      alert("⚠️ QR não encontrado na planilha.");
-    } else if (resp && resp.resultado === "Parâmetros inválidos") {
-      alert("❌ Parâmetros inválidos. Verifique a chamada.");
-    } else {
-      console.log("Resposta recebida:", resp);
-      alert("⚠️ Erro: resposta inesperada no servidor.");
+      fetch(SCRIPT_URL, { method: "POST", body: formData })
+        .then(r => r.json())
+        .then(resp => {
+          console.log("Resposta:", resp);
+          if (resp.resultado && resp.resultado.toLowerCase() === "sucesso") {
+            alert("✅ Vistoria realizada com sucesso!");
+            document.getElementById("form").style.display = "none";
+          } else if (resp.resultado === "QR não encontrado") {
+            alert("⚠️ QR não encontrado na planilha.");
+          } else if (resp.resultado === "Parâmetros inválidos") {
+            alert("❌ Parâmetros inválidos. Verifique a chamada.");
+          } else {
+            alert("⚠️ Erro: resposta inesperada no servidor.");
+          }
+        })
+        .catch(err => alert("❌ Erro ao enviar: " + err));
     }
-  })
-  .catch(err => {
-    alert("❌ Erro ao enviar: " + err);
-  });
-    }
-    
   </script>
 </body>
-
 </html>
