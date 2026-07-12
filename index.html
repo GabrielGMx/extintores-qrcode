@@ -238,14 +238,19 @@
       alert("✅ Vistoria realizada com sucesso!");
       document.getElementById("form").style.display = "none";
     } else if (resp && resp.resultado === "QR não encontrado") {
-  alert("⚠️ QR não encontrado na planilha.");
-} else if (resp && resp.resultado === "Parâmetros inválidos") {
-  alert("❌ Parâmetros inválidos. Verifique a chamada.");
-} else {
-  console.log("Resposta recebida:", resp);
-  alert("⚠️ Erro: resposta inesperada no servidor.");
-}
-}
+      alert("⚠️ QR não encontrado na planilha.");
+    } else if (resp && resp.resultado === "Parâmetros inválidos") {
+      alert("❌ Parâmetros inválidos. Verifique a chamada.");
+    } else {
+      console.log("Resposta recebida:", resp);
+      alert("⚠️ Erro: resposta inesperada no servidor.");
+    }
+  })
+  .catch(err => {
+    alert("❌ Erro ao enviar: " + err);
+  });
+    }
+    
   </script>
 </body>
 
