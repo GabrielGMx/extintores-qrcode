@@ -214,7 +214,7 @@
   const brigadista = encodeURIComponent(document.getElementById("brigadista").value);
   const dataHora = encodeURIComponent(new Date().toLocaleString());
 
-  const url = `https://script.google.com/macros/s/SEU_ID/exec?qr=${qr}&tipo=${tipo}&status=${status}&brigadista=${brigadista}&obs=${obs}&dataHora=${dataHora}`;
+  const url = `https://script.google.com/macros/s/AKfycbzxVK9-FTtbZFdb1GzJAARI1sivxAu41xKcLjUdnurR0p0rXfxyZviqOGt3k4DR7uauXg/exec?qr=${qr}&tipo=${tipo}&status=${status}&brigadista=${brigadista}&obs=${obs}&dataHora=${dataHora}`;
 
   fetch(url)
     .then(r => r.json())
