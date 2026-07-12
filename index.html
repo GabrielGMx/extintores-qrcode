@@ -228,7 +228,7 @@
       return;
     }
 
-    if (resp.status === "Sucesso!") {
+    if (resp && resp.status && resp.status.toLowerCase().includes("sucesso!")) {
       alert("✅ Vistoria realizada com sucesso!");
       document.getElementById("form").style.display = "none";
     } else {
