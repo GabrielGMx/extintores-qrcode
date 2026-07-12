@@ -160,6 +160,10 @@
     function onScanSuccess(decodedText) {
       document.getElementById("result").innerText = "QR Lido: " + decodedText;
       document.getElementById("form").style.display = "block";
+      
+      document.getElementById("qrcodeValue").value = decodedText;
+      console.log("QR lido:", decodedText);
+      
       // consultar o LOCAL na planilha
       fetch("https://script.google.com/macros/s/AKfycbzxVK9-FTtbZFdb1GzJAARI1sivxAu41xKcLjUdnurR0p0rXfxyZviqOGt3k4DR7uauXg/exec?qr=" + encodeURIComponent(decodedText))
         .then(r => r.json())
