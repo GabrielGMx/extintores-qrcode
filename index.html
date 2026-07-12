@@ -222,7 +222,7 @@
 
   console.log("URL chamada:", url);    
   fetch(url)
-  .then(r => r.text())   // <-- troque de .json() para .text()
+  .then(r => r.text())  
   .then(text => {
     console.log("Resposta bruta:", text);
     let resp;
