@@ -219,13 +219,14 @@
   fetch(url)
     .then(r => r.json())
     .then(resp => {
-      if (resp.status === "Sucesso!") {
-        alert("✅ Vistoria realizada com sucesso!");
-        document.getElementById("form").style.display = "none";
-      } else {
-        alert("⚠️ Erro: resposta inesperada no servidor.");
-      }
-    })
+  if (resp && resp.status && resp.status.toLowerCase() === "sucesso!") {
+    alert("✅ Vistoria realizada com sucesso!");
+    document.getElementById("form").style.display = "none";
+  } else {
+    console.log("Resposta recebida:", resp);
+    alert("⚠️ Erro: resposta inesperada no servidor.");
+  }
+})
     .catch(err => {
       alert("❌ Erro ao enviar: " + err);
     });
