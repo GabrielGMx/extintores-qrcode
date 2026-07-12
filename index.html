@@ -217,19 +217,28 @@
   const url = `https://script.google.com/macros/s/AKfycbzxVK9-FTtbZFdb1GzJAARI1sivxAu41xKcLjUdnurR0p0rXfxyZviqOGt3k4DR7uauXg/exec?qr=${qr}&tipo=${tipo}&status=${status}&brigadista=${brigadista}&obs=${obs}&dataHora=${dataHora}`;
 
   fetch(url)
-    .then(r => r.json())
-    .then(resp => {
-  if (resp && resp.status && resp.status.toLowerCase() === "sucesso!") {
-    alert("✅ Vistoria realizada com sucesso!");
-    document.getElementById("form").style.display = "none";
-  } else {
-    console.log("Resposta recebida:", resp);
-    alert("⚠️ Erro: resposta inesperada no servidor.");
-  }
-})
-    .catch(err => {
-      alert("❌ Erro ao enviar: " + err);
-    });
+  .then(r => r.text())   // <-- troque de .json() para .text()
+  .then(text => {
+    console.log("Resposta bruta:", text);
+    let resp;
+    try {
+      resp = JSON.parse(text);
+    } catch(e) {
+      alert("⚠️ Erro: resposta não é JSON válido.");
+      return;
+    }
+
+    if (resp.status === "Sucesso!") {
+      alert("✅ Vistoria realizada com sucesso!");
+      document.getElementById("form").style.display = "none";
+    } else {
+      console.log("Resposta recebida:", resp);
+      alert("⚠️ Erro: resposta inesperada no servidor.");
+    }
+  })
+  .catch(err => {
+    alert("❌ Erro ao enviar: " + err);
+  });
 }
   </script>
 </body>
