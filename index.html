@@ -216,6 +216,7 @@
 
   const url = `https://script.google.com/macros/s/AKfycbzxVK9-FTtbZFdb1GzJAARI1sivxAu41xKcLjUdnurR0p0rXfxyZviqOGt3k4DR7uauXg/exec?qr=${qr}&tipo=${tipo}&status=${status}&brigadista=${brigadista}&obs=${obs}&dataHora=${dataHora}`;
 
+  console.log("URL chamada:", url);    
   fetch(url)
   .then(r => r.text())   // <-- troque de .json() para .text()
   .then(text => {
